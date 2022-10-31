@@ -32,6 +32,8 @@ void AllReducer::initialize(int stage) {
 //        WATCH(bytesRcvd);
         allReduceTime = registerSignal("allReduceTime");
         ATE_s = registerSignal("ATE_s");
+        coordinator = (AllReduceCoordinator*) getModuleByPath(
+                "^.^.coordinator");
     } else if (stage == INITSTAGE_APPLICATION_LAYER) {
         connect();
     }
@@ -90,7 +92,6 @@ void AllReducer::connect() {
                            << connectAddress << "(" << destination << ") port="
                            << remotePort << " local address " << localAddress
                            << " local port=" << localPort << endl;
-
             send_socket.connect(destination, remotePort);
         }
     }
@@ -130,19 +131,12 @@ void AllReducer::socketEstablished(TcpSocket *socket) {
         // send socket
         EV_INFO << "[AllReducer" << rank << "] connected to rank "
                        << socket_index[socket->getSocketId()] << "\n";
-        sockets_established++;
-        if (sockets_established == n_workers - 1) {
-            EV_INFO << "[AllReducer" << rank
-                           << "] all connections established, starting AllReduce\n";
-            allReduceStart = simTime();
-            start_allreduce();
-        }
     } else {
         // recv socket
         EV_INFO << "[AllReducer" << rank << "] got connected from rank "
                        << socket_index[socket->getSocketId()] << "\n";
     }
-
+    coordinator->report_socket_established();
 }
 
 bool AllReducer::receive_complete_message(TcpSocket*, const GenericAppMsg*) {
@@ -164,6 +158,7 @@ void AllReducer::socketDataArrived(TcpSocket *socket, Packet *msg, bool) {
             auto allreduce_time = simTime() - allReduceStart;
             emit(allReduceTime, allreduce_time);
             emit(ATE_s, tensor_size / 4 / allreduce_time.dbl());
+            EV_DEBUG << "EMITTTT" << endl;
         }
     }
     delete msg;

@@ -32,12 +32,16 @@ simple AllReduceCoordinator
 simple Ring extends AllReducer
 {
     parameters:
+        @signal[allReduceTime](type=simtime_t);
+        @signal[ATE_s](type=double);
         @class(Ring);
 }
 
 simple HalvingDoubling extends AllReducer
 {
     parameters:
+        @signal[allReduceTime](type=simtime_t);
+        @signal[ATE_s](type=double);
         @class(HalvingDoubling);
 }
 

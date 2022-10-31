@@ -6,6 +6,7 @@
 namespace allreduce {
 
 class Ring: public AllReducer {
+    friend AllReduceCoordinator;
 private:
     void start_allreduce() override;
     bool receive_complete_message(TcpSocket*, const GenericAppMsg*) override;

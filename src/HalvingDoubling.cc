@@ -20,10 +20,6 @@ void HalvingDoubling::send_data(int send_to_rank) {
 }
 
 void HalvingDoubling::start_allreduce() {
-    coordinator = (AllReduceCoordinator*) getModuleByPath("^.^.coordinator");
-    if (rank % 2 == 0) {
-        send_data(rank + 1);
-    }
 }
 
 bool HalvingDoubling::receive_complete_message(TcpSocket *socket,

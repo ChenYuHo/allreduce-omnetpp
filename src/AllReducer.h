@@ -6,6 +6,7 @@
 #include "inet/transportlayer/contract/tcp/TcpSocket.h"
 #include "inet/common/packet/ChunkQueue.h"
 #include "inet/applications/tcpapp/GenericAppMsg_m.h"
+#include "AllReduceCoordinator.h"
 #include <unordered_map>
 
 using namespace omnetpp;
@@ -24,6 +25,7 @@ protected:
     int sockets_established = 0;
     int sendPortBase;
     int recvPortBase;
+    AllReduceCoordinator *coordinator;
 
     // statistics
     int packetsSent;

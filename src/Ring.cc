@@ -4,6 +4,7 @@ namespace allreduce {
 Define_Module(Ring);
 
 void Ring::start_allreduce() {
+    Enter_Method_Silent();
     segment_sizes.resize(n_workers, tensor_size / n_workers);
     for (size_t i = 0; i < tensor_size % n_workers; ++i) {
         segment_sizes[i]++;
